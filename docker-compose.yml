@@ -1,0 +1,31 @@
+services:
+  shim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      UPSTREAM_BASE_URL: http://upstream-mock:8001
+      SHIM_API_KEY: local-shim-token
+      UPSTREAM_API_KEY: local-upstream-token
+    ports:
+      - "8080:8080"
+    depends_on:
+      upstream-mock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz').read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  upstream-mock:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock
+    environment:
+      MOCK_UPSTREAM_API_KEY: local-upstream-token
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/healthz').read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
