@@ -20,3 +20,18 @@ Environment variables:
 - `UPSTREAM_BASE_URL`
 - `UPSTREAM_API_KEY`
 - `SHIM_API_KEY` (optional)
+
+## Run with Docker Compose
+
+Use Docker Compose if you want to run the shim and a mock upstream service together.
+
+```bash
+docker compose up --build
+```
+
+After startup:
+
+- shim: `http://localhost:8080`
+- upstream-mock: `http://upstream-mock:8001` (internal compose network)
+
+For smoke-test examples (stream/non-stream), see `docs/docker-compose.md`.
